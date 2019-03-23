@@ -3,17 +3,20 @@
   $TIMESTAMP = time();
 
   //PROVIDE FILE PATH FOR WHERE YOU WANT TO SEARCH
-  $SEARCH_DIRECTORY = "/Users/toasty/path/to/stuff/";
+  $SEARCH_DIRECTORY = "/Volumes/ALPHA/_PHOTOG/EMMA VIDEO/FLIPVIDEO/DCIM/100VIDEO";
 
   //PROVIDE FILE PATH FOR WHERE YOU WANT TO LOG
-  $SEARCH_DIRECTORY = "/Users/toasty/Desktop/logs/";
+  $LOG_DIRECTORY = "/Users/boom/Desktop/logs";
 
   //PROBABLY DON'T MESS WITH ANYTHING BELOW HERE UNLESS YOU'RE COOL WITH IT
   //_______________________________________________________________________
   //CLEAN UP PATHS
-
-  $SEARCH_DIRECTORY = str_replace(" ","\ ",$SEARCH_DIRECTORY);
-  $LOG_DIRECTORY = str_replace(" ","\ ",$LOG_DIRECTORY);
+  if (strstr($SEARCH_DIRECTORY," ")) {
+    $SEARCH_DIRECTORY = str_replace(" ","\ ",$SEARCH_DIRECTORY);
+  }
+  if (strstr($LOG_DIRECTORY," ")) {
+    $LOG_DIRECTORY = str_replace(" ","\ ",$LOG_DIRECTORY);
+  }
 
   //BUILD FIND COMMAND
   $FIND_CMD = "find $SEARCH_DIRECTORY -type d -path '*/\.*' -prune -o -not -name '.*' -type f -print";
@@ -40,7 +43,12 @@
       while (($line = fgets($handle)) !== false) {
 
           //RUN MEDIAINFO AGAINST THE FILE
-          $FULL_FILE_PATH = trim($line);
+          if (strstr($line," ")) {
+            $FULL_FILE_PATH = str_replace(" ","\ ",$line);
+          } else {
+            $FULL_FILE_PATH = $line;
+          }
+
           $MEDIAINFO_CMD = "/usr/local/bin/mediainfo --Output=XML ".$FULL_FILE_PATH;
           $MEDIAINFO_RESULTS = shell_exec($MEDIAINFO_CMD);
           //UNCOMMENT THIS IF YOU WANT TO SEE THE MEDIAINFO OUTPUT IN XML FORMAT
@@ -49,9 +57,7 @@
           //PARSE MEDIA INFO RESULT
           $FILE_XML = new SimpleXMLElement($MEDIAINFO_RESULTS);
 
-          if (!$FILE_XML->media->track) {
-            continue;
-          }
+          //var_dump($FILE_XML);
 
           foreach ($FILE_XML->media->track as $track) {
               switch((string) $track['type']) { // Get attributes as element indices
@@ -77,15 +83,13 @@
           echo $line;
           // /usr/local/bin/mediainfo
           $FILE_NAME = trim(basename($line));
-          $LINE_TO_WRITE = $FILE_NAME.",".$FULL_FILE_PATH.",".$FILE_TYPE.",".$FILE_FORMAT.",".$FILE_CODEC.",".$FILE_DETAILS.",".$FILE_AUDIO."\n";
+          $LINE_TO_WRITE = $FILE_NAME.",".trim($FULL_FILE_PATH).",".$FILE_TYPE.",".$FILE_FORMAT.",".$FILE_CODEC.",".$FILE_DETAILS.",".$FILE_AUDIO."\n";
           fwrite($fp, $LINE_TO_WRITE);
 
       }
+
+
       fclose($handle);
-
-
-
-
 
 
   } else {
