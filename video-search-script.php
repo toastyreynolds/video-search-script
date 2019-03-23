@@ -3,7 +3,8 @@
   $TIMESTAMP = time();
 
   //PROVIDE FILE PATH FOR WHERE YOU WANT TO SEARCH
-  $SEARCH_DIRECTORY = "/Volumes/ALPHA/_PHOTOG/EMMA VIDEO/FLIPVIDEO/DCIM/100VIDEO";
+  //$SEARCH_DIRECTORY = "/Volumes/ALPHA/_PHOTOG/EMMA VIDEO/FLIPVIDEO/DCIM/100VIDEO";
+  $SEARCH_DIRECTORY = "/Volumes/ALPHA/_PHOTOG/EMMA VIDEO";
 
   //PROVIDE FILE PATH FOR WHERE YOU WANT TO LOG
   $LOG_DIRECTORY = "/Users/boom/Desktop/logs";
@@ -27,6 +28,7 @@
 
   //BUILD FILENAMES
   $FILE_LIST = $LOG_DIRECTORY."/".$TIMESTAMP."_file_list.txt";
+  $SKIPPED_LIST = $LOG_DIRECTORY."/".$TIMESTAMP."_skipped_list.txt";
   $CSV_LIST = $LOG_DIRECTORY."/".$TIMESTAMP."_format_list.csv";
   //WRITE RESULTS TO A FILE FOR SAFE KEEPING AND MEMORY MANAGEMENT
 
@@ -41,6 +43,16 @@
 
   if ($handle) {
       while (($line = fgets($handle)) !== false) {
+
+        if (preg_match('/[\'^£$%&*()}{@#~?><>,|=+¬]/', $line))
+          {
+            // one or more of the 'special characters' found in $string
+            $fsp = fopen($SKIPPED_LIST, 'a+');
+            fwrite($fsp, $line);
+            fclose($fsp);
+            unset($fsp);
+            continue;
+          }
 
           //RUN MEDIAINFO AGAINST THE FILE
           if (strstr($line," ")) {
