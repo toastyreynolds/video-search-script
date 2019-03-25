@@ -1,4 +1,7 @@
 <?php
+//USER
+date_default_timezone_set('America/Los_Angeles');
+//Check out this page for the most appropriate string https://www.php.net/manual/en/timezones.php
 
 //PROVIDE FILE PATH FOR WHERE YOU WANT TO LOG
 
