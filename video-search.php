@@ -5,6 +5,9 @@
 
   //MAKE A PRETTY TIMESTAMP FOR OUR FILES
   $TIMESTAMP = date('Ymd_His');
+  $TODAY = date('Ymd');
+
+
   //_______________________________________________________________________
   // PROBABLY DON'T MESS WITH ANYTHING BELOW HERE UNLESS YOU'RE COOL WITH WHAT
   // MIGHT HAPPEN. --Toasty
@@ -42,6 +45,13 @@
       die("We don't seem to recognize ".$VIDEO_CONFIG_LOG_DIRECTORY." as a proper directory to write logs to.  We're so sorry. \n");
   }
 
+  //CHECK FOR LOGS FROM TODAY
+  if (!is_dir($VIDEO_CONFIG_LOG_DIRECTORY."/".$TODAY)) {
+    if (!mkdir($VIDEO_CONFIG_LOG_DIRECTORY."/".$TODAY,0777, true)) {
+    }
+  }
+
+
   //This is a very sloppy way to support spaces in file names
   if (strstr($VIDEO_SEARCH_DIRECTORY," ")) {
     $ESC_VIDEO_SEARCH_DIRECTORY = str_replace(" ","\ ",$VIDEO_SEARCH_DIRECTORY);
@@ -63,9 +73,13 @@
   $FIND_RESULTS = shell_exec($FIND_CMD);
 
   //BUILD FILENAMES
-  $FILE_LIST = $VIDEO_CONFIG_LOG_DIRECTORY."/".$TIMESTAMP."_".$VIDEO_SEARCH_LOG_FILE;
-  $SKIPPED_LIST = $VIDEO_CONFIG_LOG_DIRECTORY."/".$TIMESTAMP."_".$VIDEO_SEARCH_SKIPPED_FILE;
-  $CSV_LIST = $VIDEO_CONFIG_LOG_DIRECTORY."/".$TIMESTAMP."_".$VIDEO_SEARCH_FORMAT_FILE;
+
+
+
+
+  $FILE_LIST = $VIDEO_CONFIG_LOG_DIRECTORY."/".$TODAY."/".$TIMESTAMP."_".$VIDEO_SEARCH_LOG_FILE;
+  $SKIPPED_LIST = $VIDEO_CONFIG_LOG_DIRECTORY."/".$TODAY."/".$TIMESTAMP."_".$VIDEO_SEARCH_SKIPPED_FILE;
+  $CSV_LIST = $VIDEO_CONFIG_LOG_DIRECTORY."/".$TODAY."/".$TIMESTAMP."_".$VIDEO_SEARCH_FORMAT_FILE;
 
   //WRITE RESULTS TO A FILE FOR SAFE KEEPING AND MEMORY MANAGEMENT
   $fp = fopen($FILE_LIST, 'w+');
