@@ -1,26 +1,22 @@
 <?php
-
   //LOAD_USER_CONFIG
   require_once("video-config.php");
 
   //MAKE A PRETTY TIMESTAMP FOR OUR FILES
   $TIMESTAMP = date('Ymd_His');
   $TODAY = date('Ymd');
-
-
   //_______________________________________________________________________
   // PROBABLY DON'T MESS WITH ANYTHING BELOW HERE UNLESS YOU'RE COOL WITH WHAT
   // MIGHT HAPPEN. --Toasty
   //_______________________________________________________________________
   //LET'S CHECK FOR (AND REMOVE) TRAILING SLASHES IN OUR USER CONFIG PATH VARIABLES
+
   // This is a very sloppy way to account for trailing slashes in the paths above.
   if (substr($VIDEO_SEARCH_DIRECTORY, -1) == "/") { $VIDEO_SEARCH_DIRECTORY = substr($VIDEO_SEARCH_DIRECTORY, 0, -1); }
-
   if (substr($VIDEO_CONFIG_LOG_DIRECTORY, -1) == "/") { $VIDEO_CONFIG_LOG_DIRECTORY = substr($VIDEO_CONFIG_LOG_DIRECTORY, 0, -1); }
 
   //LET'S DO A LITTLE BIT OF ERROR CHECKING
   //LET'S CHECK SOME FILE NAMES
-
   if (preg_match('/[\'^£$%&*()}{@#~?><>,|=+¬]/', $VIDEO_SEARCH_LOG_FILE)) {
     die("There seems to be a problem with your \$VIDEO_SEARCH_LOG_FILE: ".$VIDEO_SEARCH_LOG_FILE."\n");
   }
@@ -30,8 +26,7 @@
   if (preg_match('/[\'^£$%&*()}{@#~?><>,|=+¬]/', $VIDEO_SEARCH_SKIPPED_FILE)) {
     die("There seems to be a problem with your \$VIDEO_SEARCH_SKIPPED_FILE: ".$VIDEO_SEARCH_SKIPPED_FILE."\n");
   }
-
-
+  //_______________________________________________________________________
   //Check to see if the path set is a valid directory to search within
   if (!is_dir($VIDEO_SEARCH_DIRECTORY)) {
     die("We don't seem to recognize ".$VIDEO_SEARCH_DIRECTORY." as a proper directory to search in.  We're so sorry. \n");
@@ -50,7 +45,6 @@
     if (!mkdir($VIDEO_CONFIG_LOG_DIRECTORY."/".$TODAY,0777, true)) {
     }
   }
-
 
   //This is a very sloppy way to support spaces in file names
   if (strstr($VIDEO_SEARCH_DIRECTORY," ")) {
@@ -73,10 +67,6 @@
   $FIND_RESULTS = shell_exec($FIND_CMD);
 
   //BUILD FILENAMES
-
-
-
-
   $FILE_LIST = $VIDEO_CONFIG_LOG_DIRECTORY."/".$TODAY."/".$TIMESTAMP."_".$VIDEO_SEARCH_LOG_FILE;
   $SKIPPED_LIST = $VIDEO_CONFIG_LOG_DIRECTORY."/".$TODAY."/".$TIMESTAMP."_".$VIDEO_SEARCH_SKIPPED_FILE;
   $CSV_LIST = $VIDEO_CONFIG_LOG_DIRECTORY."/".$TODAY."/".$TIMESTAMP."_".$VIDEO_SEARCH_FORMAT_FILE;
